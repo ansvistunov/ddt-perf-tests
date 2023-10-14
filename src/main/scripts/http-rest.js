@@ -41,7 +41,7 @@ export default function (cards) {
         for (let j = 0; j < operationCount; j++){
             operations[j] = {
                 cardId: cards[i],
-                LocalDateTime: '2023-10-13',
+                operationDateTime: '2023-10-14T17:42:13.142388300',
                 amount: 1 //j/100
             }
         }

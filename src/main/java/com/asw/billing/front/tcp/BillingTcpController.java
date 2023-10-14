@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -27,9 +28,9 @@ public class BillingTcpController {
     BillingService billingService;
     ObjectMapper jsonMapper;
     @Value("${tcp.port:8181}")
-    private String port;
+    private Integer port;
     @Value("${tcp.queue:100}")
-    private String queue;
+    private Integer queue;
 
     public BillingTcpController(BillingService billingService, ObjectMapper jsonMapper){
         this.billingService = billingService;
@@ -38,8 +39,7 @@ public class BillingTcpController {
 
     @PostConstruct
     public void init() throws Exception {
-
-        ServerSocket serverSocket = new ServerSocket(Integer.valueOf(port), Integer.valueOf(queue));
+        ServerSocket serverSocket = new ServerSocket(port, queue);
         ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
         executorService.execute(() -> {
             log.info("TCP server started. port:{} queue:{}", port, queue);

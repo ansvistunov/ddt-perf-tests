@@ -12,9 +12,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 import java.net.URI;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @Component
@@ -43,15 +49,18 @@ public class BillingRestController {
     }
 
     public Mono<ServerResponse> processOperations(ServerRequest request) {
+        ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
+        Scheduler schedulerA = Schedulers.fromExecutorService(executorService);
         return request.bodyToMono(DTOCardOperationList.class)
-                .flatMap(cardOperationList -> {
-                    billingService.processOperations(
-                            cardOperationList.operationList().stream()
-                                    .map(dto -> new BillingStorage.CardOperation(dto.cardId(), dto.operationDateTime(), dto.amount()))
-                                    .collect(Collectors.toList())
-                    );
-                    return ServerResponse.ok().build();
-                });
+                .publishOn(schedulerA)
+                .flatMap((dtolist) -> {
+                    List<BillingStorage.CardOperation> cardOperationList = dtolist.operationList()
+                            .parallelStream()
+                            .map(dto -> new BillingStorage.CardOperation(dto.cardId(), dto.operationDateTime(), dto.amount()))
+                            .collect(Collectors.toList());
+                    return Mono.just(billingService.processOperations(cardOperationList));
+                })
+                .flatMap((foo)->ServerResponse.ok().build());
     }
 
     public Mono<ServerResponse> getCard(ServerRequest request) {
