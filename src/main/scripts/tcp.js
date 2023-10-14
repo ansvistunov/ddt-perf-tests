@@ -2,10 +2,7 @@ import tcp from 'k6/x/tcp';
 import { check, sleep } from 'k6';
 
 
-export const options = {
-    vus: 10,
-    iterations: 1000,
-};
+
 
 function normalizeFromSocket(buffer){
   let zero = buffer.indexOf(0);
@@ -14,6 +11,10 @@ function normalizeFromSocket(buffer){
   return JSON.parse(str);
 }
 
+export const options = {
+  vus: 100,
+  iterations: 1000,
+};
 
 const cardCount = 50;
 const operationCount = 1000;
@@ -76,7 +77,7 @@ export function teardown(cards) {
 
     for (let i = 0; i <cardCount; i++){
       let payload = JSON.stringify(cards[i])+'\n';
-      console.log(payload);
+      //console.log(payload);
       tcp.write(conn, payload);
       let res = tcp.read(conn, 1024);
       let card = normalizeFromSocket(res);

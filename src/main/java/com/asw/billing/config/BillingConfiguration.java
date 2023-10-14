@@ -29,9 +29,5 @@ public class BillingConfiguration {
 
     }
 
-    @Bean()
-    @Scope("singleton")
-    public Parameters parameters() {
-        return new Parameters();
-    }
+
 }

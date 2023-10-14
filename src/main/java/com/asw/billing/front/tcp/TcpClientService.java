@@ -26,12 +26,6 @@ public class TcpClientService implements Runnable {
         this.socket = socket;
         this.billingService = billingService;
         this.jsonMapper = jsonMapper;
-        try {
-            this.socket.setSoTimeout(100);
-            this.socket.setKeepAlive(true);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -66,7 +60,7 @@ public class TcpClientService implements Runnable {
                 //log.info("nodeType={}", nodeType);
 
                 if (JsonNodeType.OBJECT == nodeType){
-                    DTOCardOperationList operationList = jsonMapper.readValue(content, DTOCardOperationList.class);
+                    DTOCardOperationList operationList = jsonMapper.treeToValue(jsonNode, DTOCardOperationList.class);
                     //log.info("process operations: {}", operationList.operationList());
                     billingService.processOperations(operationList.operationList().stream()
                             .map(dto -> new BillingStorage.CardOperation(dto.cardId(), dto.operationDateTime(), dto.amount()))

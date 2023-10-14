@@ -1,6 +1,7 @@
 package com.asw.billing.storage;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -8,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Service("BillingMemoryStorage")
+@Component("BillingMemoryStorage")
 @Slf4j
 public class BillingMemoryStorage implements BillingStorage{
 
