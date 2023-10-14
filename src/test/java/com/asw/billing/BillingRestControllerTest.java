@@ -1,10 +1,12 @@
 package com.asw.billing;
 
+import com.asw.billing.common.Parameters;
 import com.asw.billing.config.BillingConfiguration;
 import com.asw.billing.dto.DTOCard;
 import com.asw.billing.dto.DTOCardOperation;
 import com.asw.billing.dto.DTOCardOperationList;
 import com.asw.billing.front.rest.BillingRestController;
+import com.asw.billing.front.rest.ParametersController;
 import com.asw.billing.service.BillingService;
 import com.asw.billing.storage.BillingStorage;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +25,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @WebFluxTest(controllers = BillingRestController.class)
-@Import(BillingConfiguration.class)
+@Import({BillingConfiguration.class, ParametersController.class, Parameters.class})
 @Slf4j
 public class BillingRestControllerTest {
 
