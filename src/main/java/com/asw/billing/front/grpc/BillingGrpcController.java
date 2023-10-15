@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @Component
 @Slf4j
 public class BillingGrpcController {
@@ -20,9 +23,11 @@ public class BillingGrpcController {
 
     @PostConstruct
     public void init(){
+        ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
         Server server = ServerBuilder
                 .forPort(port)
                 .addService(billingGrpc)
+                .executor(executorService)
                 .build();
         try {
             server.start();

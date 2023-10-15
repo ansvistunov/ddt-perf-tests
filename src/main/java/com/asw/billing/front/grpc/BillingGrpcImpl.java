@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
@@ -63,6 +65,16 @@ public class BillingGrpcImpl extends BillingServiceStreamGrpc.BillingServiceStre
                 .setBalance(card.ballance())
                 .build());
         responseObserver.onCompleted();
+    }
+
+    public void processOperations(com.asw.billing.front.grpc.CardOperations request,
+                                  io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+        List<BillingStorage.CardOperation> cardOperationList = request.getOperationsList().stream().map(dto -> new BillingStorage.CardOperation(dto.getCard(), LocalDateTime.parse(dto.getDatetime()), dto.getMoney()))
+                .toList();
+        billingService.processOperations(cardOperationList);
+        responseObserver.onNext(Empty.newBuilder().build());
+        responseObserver.onCompleted();
+
     }
 
 

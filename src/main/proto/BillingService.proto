@@ -1,6 +1,6 @@
 syntax = "proto3";
 import "google/protobuf/empty.proto";
-package grpc.ex2;
+package com.asw.billing;
 option java_multiple_files = true;
 option java_package = "com.asw.billing.front.grpc";
 option java_outer_classname = "BillingServiceStreamProto";
@@ -19,6 +19,11 @@ message MoneyRequest{
   double money = 2;
   string datetime = 3;
 }
+
+message CardOperations{
+  repeated MoneyRequest operations = 1;
+}
+
 message GetCardBalanceRequest{
   int64 card = 1;
 }
@@ -28,5 +33,7 @@ message GetCardBalanceResponse{
 service BillingServiceStream{
   rpc addNewCard(AddNewCardRequest) returns (AddNewCardResponse);
   rpc processOperation(stream MoneyRequest) returns (google.protobuf.Empty);
+  rpc processOperations(CardOperations) returns (google.protobuf.Empty);
   rpc getCardBalance(GetCardBalanceRequest) returns (GetCardBalanceResponse);
+
 }

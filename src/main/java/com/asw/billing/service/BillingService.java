@@ -58,7 +58,7 @@ public class BillingService {
     private void delayForCardOperation(BillingStorage.CardOperation cardOperation){
         //long opCount = operationCount.incrementAndGet();
         if (!useDelay) return;
-        //if (opCount % 10000 == 0) log.info("operation count delay called {} times, active Threads:{}", opCount, Thread.activeCount());
+        //if (opCount % 50000 == 0) log.info("operation count delay called {} times, active Threads:{}", opCount, Thread.activeCount());
         int delay = delayInNanos[(int)(cardOperation.idCard() % delayInNanos.length)];
         try {
             Thread.sleep(0, delay);
